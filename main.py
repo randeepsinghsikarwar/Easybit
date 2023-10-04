@@ -2,7 +2,7 @@
 
 import subprocess
 
-path = ["C:\Easybit\installer.bat"]
+path = ["installer.bat"]
 process = subprocess.run(path, capture_output=True) 
 if process.returncode != 0:
     print("some error") 
