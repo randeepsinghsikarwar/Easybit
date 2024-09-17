@@ -2,6 +2,8 @@ import subprocess as sp
 import os
 
 print("Welcome to EasyBit programming language installer")
+current_dir = os.getcwd()
+
 
 print("installing...")
     # JDK version
@@ -12,10 +14,10 @@ java_path = rf"{java_home_path}\bin"
 
     # --Downloading assets--
     # command to remotely download java. 
-cmd1 = "curl -o executables\javaIns.exe https://download.oracle.com/java/21/latest/jdk-21_windows-x64_bin.exe"
-if not os.path.exists('executables\javaIns.exe'):
-    downloading = sp.run(cmd1)
-silent_install = sp.run(["installer.bat"], capture_output=True)
+cmd1 = "curl -o javaIns.exe https://download.oracle.com/java/21/latest/jdk-21_windows-x64_bin.exe"
+if not os.path.exists('javaIns.exe'):
+    downloading = sp.run(cmd1, shell=True)
+silent_install = sp.run(["javaIns.exe", "/s"], capture_output=True, cwd=current_dir)
 
     # --installing-
 print(silent_install)
@@ -33,10 +35,11 @@ if(silent_install.returncode == 0):
     path_var = os.environ.get('PATH')
     path_dir = path_var.split(os.pathsep)
 
-    if any(java_path.lower() == dir.lower for dir in path_dir):
+    if any(java_path.lower() == dir.lower() for dir in path_dir):
         print('\njava path already exist')
     else:
-        command = ['powershell.exe', '-ExecutionPolicy', 'Unrestricted', r'C:\Easybit\final+project\update_path.ps1', '-newPath', f'"{java_path}"']
+        powershell_script_path = os.path.join(current_dir, 'update_path.ps1')
+        command = ['powershell.exe', '-ExecutionPolicy', 'Unrestricted', powershell_script_path, '-newPath', f'"{java_path}"']
         process = sp.Popen(command, stdout = sp.PIPE, stderr=sp.PIPE, text=True)
         output, error = process.communicate()
         if process.returncode == 0:
